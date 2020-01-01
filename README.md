@@ -6,7 +6,7 @@ This directory contains a script, ```drive.py```, for push and restore your File
 
 ## Configuring
 
-it's easy to set up
+it's easy to set up, ```first``` remove my ```locale.db``` file from cloning content
 
 All the configuration is done in a file named ```.config.ini``` stored at the root of your home folder.
 

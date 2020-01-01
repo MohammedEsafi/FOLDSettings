@@ -40,11 +40,8 @@ def reader(filename):
 
 def writer(content, filename):
 	# convert binary data to proper format and write it on file
-	with open(filename, 'rb') as file:
-		md5Checksum = hashlib.md5(file.read()).hexdigest()
 	with open(filename, 'wb') as file:
-		if md5Checksum != hashlib.md5(content).hexdigest():
-			file.write(content)
+		file.write(content)
 
 def opt(argv):
 	options = ['push', 'restore', '--help', '--version', '--force', '-h', '-f']
@@ -156,7 +153,7 @@ def main():
 
 	if connection:
 		connection.close()
-		print("{}{}i{} The sqlite connection is closed.".format(style.bold, style.green, style.reset))
+		print("{}{}i{} FINISHED: The sqlite connection is closed.".format(style.bold, style.green, style.reset))
 
 if __name__ == '__main__':
 	main()
