@@ -17,7 +17,8 @@ query = {
 	"INSERT": "INSERT INTO 'Files' (realpath, content) VALUES (?, ?)",
 	"UPDATE": "UPDATE 'Files' SET content = ? WHERE realpath = ?",
 	"SELECT": "SELECT * FROM 'Files'",
-	"GET": "SELECT * FROM 'Files' WHERE realpath = ?"
+	"GET": "SELECT * FROM 'Files' WHERE realpath = ?",
+	"DELETE": "DELETE FROM 'Files' WHERE realpath = ?"
 }
 
 class style: 
@@ -126,6 +127,20 @@ def main():
 					connection.commit()
 					# Files inserted successfully as a BLOB into a table
 					print("{}{}‣{} {}{}{}".format(style.bold, style.green, style.reset, style.italic, relpath, style.reset))
+
+		# delete not existing files in ~/.config.ini list
+		print("{}{}?{} Do you want to delete not existing files in ~/.config.ini list? {}(Y/N){} "\
+		.format(style.bold, style.green, style.reset, style.disable, style.reset), end="")
+		response = input()
+		if __FORCE or response == 'Y' or response == 'y':
+			cursor.execute(query["SELECT"])
+			record = cursor.fetchall()
+			result = [bit[0] for bit in record]
+			del_list = [item for item in result if (item not in source_paths)]
+			for item in del_list:
+				cursor.execute(query["DELETE"], tuple([item]))
+			if len(del_list) != 0:
+				connection.commit()
 
 	# restore opt
 	elif args["restore"]:
