@@ -4,7 +4,7 @@ import hashlib
 import sys
 
 usage = '''drive. keep your files in sync
-usage: python drive.py push                sync your files to your locale database.
+usage: python drive.py [options] push      sync your files to your locale database.
        python drive.py [options] restore   restore the files to your system.
        python drive.py -h --help           show this help message.
        python drive.py --version           show version.
@@ -129,18 +129,19 @@ def main():
 					print("{}{}‣{} {}{}{}".format(style.bold, style.green, style.reset, style.italic, relpath, style.reset))
 
 		# delete not existing files in ~/.config.ini list
-		print("{}{}?{} Do you want to delete not existing files in ~/.config.ini list? {}(Y/N){} "\
-		.format(style.bold, style.green, style.reset, style.disable, style.reset), end="")
-		response = input()
-		if __FORCE or response == 'Y' or response == 'y':
-			cursor.execute(query["SELECT"])
-			record = cursor.fetchall()
-			result = [bit[0] for bit in record]
-			del_list = [item for item in result if (item not in source_paths)]
-			for item in del_list:
-				cursor.execute(query["DELETE"], tuple([item]))
-			if len(del_list) != 0:
-				connection.commit()
+		if not __FORCE:
+			print("{}{}?{} Do you want to delete not existing files in ~/.config.ini list? {}(Y/N){} "\
+			.format(style.bold, style.green, style.reset, style.disable, style.reset), end="")
+			response = input()
+			if response == 'Y' or response == 'y':
+				cursor.execute(query["SELECT"])
+				record = cursor.fetchall()
+				result = [bit[0] for bit in record]
+				del_list = [item for item in result if (item not in source_paths)]
+				for item in del_list:
+					cursor.execute(query["DELETE"], tuple([item]))
+				if len(del_list) != 0:
+					connection.commit()
 
 	# restore opt
 	elif args["restore"]:
